@@ -7,12 +7,20 @@
 	<!-- development version, includes helpful console warnings -->
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
-
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+	<style>
+		.card img {
+			height: 350px;
+			width: 100%;
+			object-fit: cover;
+		}
+	</style>
 </head>
 
 <body>
@@ -27,7 +35,7 @@
 							<path fill-rule="evenodd" d="M9 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
 						</svg>
 
-						<strong>Find Films</strong>
+						<strong>Vue films</strong>
 					</a>
 				</div>
 			</div>
@@ -99,14 +107,38 @@
 		Vue.component('film-card', {
 			props: ['film'],
 			computed: {
+				year: function() {
+					return this.film.Year + ' г';
+				},
+				type: function() {
+					switch (this.film.Type) {
+						case 'movie': 	
+							return 'Фильм'; 
+							break;
+
+						case 'series': 	
+							return 'Сериал'; 
+							break;
+
+						case 'episode': 
+							return 'Фильм'; 
+							break;
+
+						default:
+							return this.film.Type;
+					}
+				},				
 			},
 			template: `
-				<div class="col-md-4">
-					<div class="card mb-4 shadow">
-						<img :src="film.image" class="bd-placeholder-img card-img-top">
+				<div class="col-md-3 mb-5">
+					<div class="card h-100 shadow">
+						<img :src="film.Poster" class="bd-placeholder-img card-img-top">
 						<div class="card-body">
-							<p class="h4">{{ film.name }}</p>
-							<p class="card-text">{{ film.desc }}</p>
+							<p class="h4">{{ film.Title }}</p>
+							<p class="card-text">
+								<span class="badge badge-primary">{{ this.type }}</span>
+								<span class="badge badge-primary">{{ this.year }}</span>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -116,19 +148,21 @@
 		var app = new Vue({
 			el: '#app',
 			data: {
-				films: [
-					{id: 0, name: 'Фильм 1', desc: 'Описание 1', image: 'https://i.stack.imgur.com/GNhxO.png'},
-					{id: 1, name: 'Фильм 2', desc: 'Описание 2', image: 'https://i.stack.imgur.com/GNhxO.png'},
-					{id: 2, name: 'Фильм 3', desc: 'Описание 3', image: 'https://i.stack.imgur.com/GNhxO.png'},
-					{id: 2, name: 'Фильм 4', desc: 'Описание 4', image: 'https://i.stack.imgur.com/GNhxO.png'},
-					{id: 2, name: 'Фильм 5', desc: 'Описание 5', image: 'https://i.stack.imgur.com/GNhxO.png'},
-					{id: 2, name: 'Фильм 6', desc: 'Описание 6', image: 'https://i.stack.imgur.com/GNhxO.png'},
-				],
+				apikey: '8a52e5e8',
+				films: false,
 			},
-			computed: {
-				
+			computed: {				
 			},
 			methods: {
+			},
+			mounted() {
+				axios
+					.get('http://www.omdbapi.com/?apikey='+this.apikey+'&s=iron')
+					.then(response => {
+						this.films = response.data.Search;
+						console.log(response.data.Search);
+					})
+					.catch(error => console.log(error));
 			}
 		})
 	</script>
