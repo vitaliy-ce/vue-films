@@ -1,2 +1,2 @@
 # vue-films
-Поиск фильмов
+Реализация фронта для OMDb API http://www.omdbapi.com/
