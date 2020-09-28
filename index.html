@@ -15,6 +15,9 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
 	<style>
+		.card {
+			border: none;
+		}
 		.card img {
 			height: 350px;
 			width: 100%;
@@ -52,16 +55,38 @@
 			<div class="py-5">
 				<div class="container">
 
-					<div class="mb-5">
-						<div class="form-group">
-							<input type="text" v-model="query" @input="getFilms" class="form-control" placeholder="Что будем искать?">
+					<div class="card shadow bg-white p-4 mb-5">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="api_query">Что будем искать?</label>
+									<input type="text" v-model="api_query" @input="getFilms" id="api_query" class="form-control">
+								</div>
+							</div>
+
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="api_year">Год выпуска</label>
+									<input type="text" v-model="api_year" @input="getFilms" id="api_year" class="form-control">
+								</div>
+							</div>
+
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="api_type">Тип</label>
+									<select v-model="api_type" @change="getFilms" id="api_type" class="form-control">
+										<option value="">---</option>
+										<option v-for="(type_item, key) in type_list" :key="key" v-bind:value="key">{{type_item}}</option>
+									</select>
+								</div>
+							</div>
 						</div>
 					</div>
 
 					<div class="row">
 						<film-card
-							v-for="(film, film_index) in films"
-							v-bind:key="film_index"
+							v-for="(film, key) in films"
+							v-bind:key="key"
 							v-bind:film="film"
 						></film-card>						
 					</div>
@@ -155,18 +180,35 @@
 		var app = new Vue({
 			el: '#app',
 			data: {
-				apikey: '8a52e5e8',
 				films: false,
-				query: 'Iron',
+				api_key: '8a52e5e8',
+				api_query: 'Iron',
+				api_type: '',
+				api_year: '',
+				api_page: 1,
+				type_list: {
+					movie: 'Фильм',
+					series: 'Сериал',
+					episode: 'Эпизод',
+				}
 			},
 			computed: {				
 			},
 			methods: {
 				getFilms: function() {
-					axios
-						.get('http://www.omdbapi.com/?apikey=' + this.apikey + '&s=' +this.query)
+					axios({
+						method: 'get',
+						url: 'http://www.omdbapi.com',
+						params: {
+							apikey: this.api_key,
+							s: 		this.api_query,
+							type: 	this.api_type,
+							y: 		this.api_year,
+							page : 	this.api_page,
+						}
+					})
 						.then(response => this.films = response.data.Search)
-						.catch(error => console.log(error));					
+						.catch(error => console.log(error));
 				}
 			},
 			mounted() {
