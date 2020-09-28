@@ -96,46 +96,7 @@
 	</div>
 
 
-
 	<script>
-		// Vue.component('cart-product-item', {
-		// 	props: ['products', 'product', 'product_index', 'currency'],
-		// 	computed: {
-		// 		price_convert: function() {
-		// 			return +(this.product.price / this.currency.value).toFixed(2);
-		// 		},
-		// 		total: function() {
-		// 			return +(this.price_convert * this.product.quantity).toFixed(2);
-		// 		}
-		// 	},
-		// 	methods: {
-		// 		checkInputQuantity: function() {
-		// 			this.product.quantity = Number(String(this.product.quantity).replace(/\D+/g, ''));
-		// 			if (this.product.quantity < 1) { this.product.quantity = 1; }
-		// 		},
-		// 		increaseQuantity: function() {
-		// 			this.product.quantity += 1;
-		// 		},
-		// 		decreaseQuantity: function() {
-		// 			if (this.product.quantity > 1) { this.product.quantity -= 1; }
-		// 		},
-		// 		deleteProduct: function() {
-		// 			this.products.splice(this.product_index, 1);
-		// 		}
-		// 	},
-		// 	template: `
-		// 		<div class="cart-product-item" style="background: #f2f2f2; margin-bottom: 10px; padding: 15px;">
-
-		// 			<button @click="decreaseQuantity">-</button>
-		// 			<input type="text" v-model="product.quantity" @input="checkInputQuantity" style="width: 30px;">
-		// 			<button @click="increaseQuantity">+</button>
-
-		// 			<span><b>{{ product.name }}:</b> {{ product.price }} {{ currency.short }} x {{ product.quantity }} шт. = {{ total }} {{ currency.short }}</span>
-		// 			<button @click="deleteProduct">Удалить</button>
-		// 		</div>
-		// 	`
-		// })
-
 		Vue.component('film-card', {
 			props: ['film'],
 			computed: {
@@ -162,7 +123,7 @@
 				},				
 			},
 			template: `
-				<div class="col-md-3 mb-5">
+				<div class="col-6 col-md-4 col-lg-3 mb-5">
 					<div class="card h-100 shadow">
 						<img :src="film.Poster" class="bd-placeholder-img card-img-top">
 						<div class="card-body">
