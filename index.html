@@ -51,6 +51,13 @@
 
 			<div class="album py-5 bg-light">
 				<div class="container">
+
+					<div class="mb-5">
+						<div class="form-group">
+							<input type="text" v-model="query" @input="getFilms" class="form-control" placeholder="Что будем искать?">
+						</div>
+					</div>
+
 					<div class="row">
 						<film-card
 							v-for="(film, film_index) in films"
@@ -150,19 +157,20 @@
 			data: {
 				apikey: '8a52e5e8',
 				films: false,
+				query: 'Iron',
 			},
 			computed: {				
 			},
 			methods: {
+				getFilms: function() {
+					axios
+						.get('http://www.omdbapi.com/?apikey=' + this.apikey + '&s=' +this.query)
+						.then(response => this.films = response.data.Search)
+						.catch(error => console.log(error));					
+				}
 			},
 			mounted() {
-				axios
-					.get('http://www.omdbapi.com/?apikey='+this.apikey+'&s=iron')
-					.then(response => {
-						this.films = response.data.Search;
-						console.log(response.data.Search);
-					})
-					.catch(error => console.log(error));
+				this.getFilms();
 			}
 		})
 	</script>
