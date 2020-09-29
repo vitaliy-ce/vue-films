@@ -88,6 +88,7 @@
 							v-for="(film, key) in films"
 							v-bind:key="key"
 							v-bind:film="film"
+							v-bind:type_list="type_list"
 						></film-card>						
 					</div>
 				</div>
@@ -98,28 +99,13 @@
 
 	<script>
 		Vue.component('film-card', {
-			props: ['film'],
+			props: ['film', 'type_list'],
 			computed: {
 				year: function() {
 					return this.film.Year + ' г';
 				},
 				type: function() {
-					switch (this.film.Type) {
-						case 'movie': 	
-							return 'Фильм'; 
-							break;
-
-						case 'series': 	
-							return 'Сериал'; 
-							break;
-
-						case 'episode': 
-							return 'Фильм'; 
-							break;
-
-						default:
-							return this.film.Type;
-					}
+					return this.type_list[this.film.Type] ?? this.film.Type;
 				},				
 			},
 			template: `
