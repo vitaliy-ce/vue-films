@@ -61,39 +61,51 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="api_query">Что будем искать?</label>
-									<input type="text" v-model="api_query" @input="getFilms" id="api_query" class="form-control">
+									<input type="text" v-model="api_query" @input="findFilms" id="api_query" class="form-control">
 								</div>
 							</div>
 
 							<div class="col-md-3">
 								<div class="form-group">
 									<label for="api_year">Год выпуска</label>
-									<input type="text" v-model="api_year" @input="getFilms" id="api_year" class="form-control">
+									<input type="text" v-model="api_year" @input="findFilms" id="api_year" class="form-control">
 								</div>
 							</div>
 
 							<div class="col-md-3">
 								<div class="form-group">
 									<label for="api_type">Тип</label>
-									<select v-model="api_type" @change="getFilms" id="api_type" class="form-control">
+									<select v-model="api_type" @change="findFilms" id="api_type" class="form-control">
 										<option value="">---</option>
-										<option v-for="(type_item, key) in type_list" :key="key" v-bind:value="key">{{type_item}}</option>
+										<option v-for="(type_item, key) in type_list" :key="key" :value="key">{{type_item}}</option>
 									</select>
 								</div>
 							</div>
 						</div>
 					</div>
 
-					<p class="h5 mb-4" v-if="total_results">Найдено: <b>{{ total_results }}</b> фильмов/сериалов</p>
-					<p class="h5" v-else>К сожалению, ничего не нашлось 😟</p>
+					<p class="h5 mb-4 text-center" v-if="total_results">Найдено: <b>{{ total_results }}</b> фильмов/сериалов</p>
+					<p class="h5 mb-4 text-center" v-else>К сожалению, ничего не нашлось 😟</p>
 
 					<div class="row">
 						<film-card
 							v-for="(film, key) in films"
-							v-bind:key="key"
-							v-bind:film="film"
-							v-bind:type_list="type_list"
+							:key="key"
+							:film="film"
+							:type_list="type_list"
 						></film-card>						
+					</div>
+
+					<div class="text-center">
+						<button 
+							class="btn btn-primary" 
+							@click="showMore" 
+							v-if="total_results && films.length < total_results"
+							:disabled="show_more_disabled"
+						> 
+							Показать еще
+							<span class="spinner-border spinner-border-sm ml-2" v-if="show_more_disabled"></span>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -131,7 +143,7 @@
 		var app = new Vue({
 			el: '#app',
 			data: {
-				films: false,
+				films: [],
 				total_results: 0,
 				api_key: '8a52e5e8',
 				api_query: 'Iron',
@@ -142,12 +154,14 @@
 					movie: 'Фильм',
 					series: 'Сериал',
 					episode: 'Эпизод',
-				}
+				},
+				show_more_disabled: false
 			},
-			computed: {				
+			computed: {
 			},
 			methods: {
 				getFilms: function() {
+					this.show_more_disabled = true;
 					axios({
 						method: 'get',
 						url: 'https://www.omdbapi.com',
@@ -160,10 +174,24 @@
 						}
 					})
 					.then(response => {
-						this.films = response.data.Search;
-						this.total_results = response.data.totalResults;
+						this.show_more_disabled = false;
+						if (this.api_page == 1) {
+							this.films = [];
+						}
+						if (!!response.data.Search) {
+							this.films = [...this.films, ...response.data.Search];
+						}
+						this.total_results = response.data.totalResults ?? 0;
 					})
 					.catch(error => console.log(error));
+				},
+				findFilms: function() {
+					this.api_page = 1;
+					this.getFilms();
+				},
+				showMore: function() {
+					this.api_page += 1;
+					this.getFilms();
 				}
 			},
 			mounted() {
