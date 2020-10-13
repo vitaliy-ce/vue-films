@@ -84,6 +84,9 @@
 						</div>
 					</div>
 
+					<p class="h5 mb-4" v-if="total_results">Найдено: <b>{{ total_results }}</b> фильмов/сериалов</p>
+					<p class="h5" v-else>К сожалению, ничего не нашлось 😟</p>
+
 					<div class="row">
 						<film-card
 							v-for="(film, key) in films"
@@ -92,8 +95,6 @@
 							v-bind:type_list="type_list"
 						></film-card>						
 					</div>
-
-					<p class="h5" v-if="!films">К сожалению, ничего не нашлось 😟</p>
 				</div>
 			</div>
 		</main>
@@ -131,6 +132,7 @@
 			el: '#app',
 			data: {
 				films: false,
+				total_results: 0,
 				api_key: '8a52e5e8',
 				api_query: 'Iron',
 				api_type: '',
@@ -157,7 +159,10 @@
 							page : 	this.api_page,
 						}
 					})
-					.then(response => this.films = response.data.Search)
+					.then(response => {
+						this.films = response.data.Search;
+						this.total_results = response.data.totalResults;
+					})
 					.catch(error => console.log(error));
 				}
 			},
