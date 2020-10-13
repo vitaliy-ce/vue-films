@@ -48,7 +48,7 @@
 			<section class="jumbotron text-center mb-0">
 				<div class="container">
 					<h1 class="jumbotron-heading">Поиск фильмов</h1>
-					<p class="lead text-muted">Реализация фронта для OMDb API <code>http://www.omdbapi.com/</code></p>
+					<p class="lead text-muted">Реализация фронта для OMDb API <code>https://www.omdbapi.com/</code></p>
 				</div>
 			</section>
 
@@ -147,7 +147,7 @@
 				getFilms: function() {
 					axios({
 						method: 'get',
-						url: 'http://www.omdbapi.com',
+						url: 'https://www.omdbapi.com',
 						params: {
 							apikey: this.api_key,
 							s: 		this.api_query,
